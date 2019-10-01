@@ -10,7 +10,6 @@ class UpdateController extends CI_Controller
         
     }
 
-    // Attention Need to Fix This!!!!!!
     public function goToPage()
     {
      $navItemURL = $this->uri->segment(3);
