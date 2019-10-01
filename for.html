@@ -1,0 +1,1084 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Lessons: For</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="http://localhost:8080/learntocodeV12/jquery-1.12.0.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-git.js"></script> -->
+    <link rel="stylesheet" href="http://localhost:8080/learntocodeV12/jquery-ui-1.12.0/jquery-ui.min.css">
+    <link href="http://localhost:8080/learntocodeV12/prism/prism.css" rel="stylesheet" />
+    <link href="http://localhost:8080/learntocodeV12/prism/prism-line-numbers.css" rel="stylesheet" />
+    <link href="http://localhost:8080/learntocodeV12/prism/prism-line-highlight.css" rel="stylesheet" />
+    <link rel="stylesheet" href="http://localhost:8080/learntocodeV12/bootstrap-3.3.7/css/bootstrap.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="http://localhost:8080/learntocodeV12/bootstrap-3.3.7/css/bootstrap-theme.min.css">
+    <script src="http://localhost:8080/learntocodeV12/jquery-ui-1.12.0/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="http://localhost:8080/learntocodeV12/style.css" />
+    <style>
+        .tab-pane label {
+            font-weight: 400;
+            padding-top: 10px;
+            padding-bottom: -10px;
+        }
+        
+        .sortableTab {
+            list-style: none;
+            -webkit-padding-start: 0px;
+        }
+        
+        .bs-docs-sidebar .nav > li > a:hover,
+        .bs-docs-sidebar .nav > li > a:focus {
+            color: #108040, border-left: 1px solid #108040;
+        }
+        
+        .bs-docs-sidebar .nav > .active > a,
+        .bs-docs-sidebar .nav > .active:hover > a,
+        .bs-docs-sidebar .nav > .active:focus > a {
+            padding-left: 18px;
+            font-weight: bold;
+            color: #108040;
+            background-color: transparent;
+            border-left: 2px solid #108040;
+        }
+        
+        .back-to-top:hover,
+        .bs-docs-theme-toggle:hover {
+            color: #563d7c;
+            text-decoration: none;
+        }
+        
+        .dropdown-menu>.active>a,
+        .dropdown-menu>.active>a:focus,
+        .dropdown-menu>.active>a:hover {
+            background-image: none;
+            background-color: #108040;
+        }
+    </style>
+</head>
+<!-- <body onclick="updateData(event)"> -->
+
+<body>
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top navbar-lesson">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#"><img src="http://localhost:8080/learntocodeV12/images/westminster-logo.png" width="65%"></a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <?php
+                    $navItemsCount = 0;
+                     foreach ($navData as $navigation){
+                     echo "<li class=dropdown active>";
+                       echo "<a href=# class=dropdown-toggle data-toggle=dropdown role=button aria-haspopup=true aria-expanded=alse>".$navigation->title."<span class=caret></span></a>";
+                       echo "<ul class=dropdown-menu>";
+                         foreach ($navItmData as $navigationItem){
+                         if($navigationItem->navigationId == $navigation->navigationId){
+                         $navItemsCount++;
+                         //echo "<li><a href='".$navigationItem->url."'>".$navigationItem->title."</a></li>";
+                         echo "<li><button style='border: none; background-color: white;' onclick='goToPage".$navItemsCount."()'>&nbsp&nbsp".$navigationItem->title."</button></li>";
+                         echo "<input type='hidden' id='pageId".$navItemsCount."' value='".$navigationItem->navigationItemId."'>";
+                         echo "<input type='hidden' id='pageUrl".$navItemsCount."' value='".$navigationItem->url."'>";
+                       }
+                     }
+                     echo"</ul>";
+                     echo"</li>";
+                     }
+                     ?>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="../About/about.html">About this App</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <main class="container language-javascript">
+        <!-- <div class="col-md-9" role="main" contenteditable="True"><h1><?php foreach ($pageTitle as $pageTitleObject){echo $pageTitleObject->title;} ?></h1> -->
+        <div class="col-md-9" role="main">
+            <h1><?php foreach ($pageTitle as $pageTitleObject){echo $pageTitleObject->title;} ?></h1>
+            <h2 id="Definition" class="group">Definition</h2>
+            <?php
+               $pageDefinitionCount = 0;
+               $deletePageDefinitionBtnCount = 0;
+               foreach ($definition as $definition)
+               {
+               $pageDefinitionCount++;
+               $deletePageDefinitionBtnCount++;
+               //echo "<p>You have not added any defintion for this page yet!</p>";
+               echo "<input type='hidden' name='definitionId' id='definitionId' value='".$definition->definitionId."'>";
+               echo "<p contenteditable='True' id='definition'>".$definition->definitionDescription."</p>";
+               echo "<button onclick='deletePageDefinition".$deletePageDefinitionBtnCount."()'>Delete Definition</button>";
+               }
+               ?>
+                <button onclick="updateDefinition()" style="float: right;">Update Definition</button>
+                <br>
+                <!-- okay uri segmentation works here, I just need to figure out how to do this for the other parts
+            <button onclick="location.href='<?php echo base_url();?>UpdateController/getSegment/'" style="float: right;">Get Segment</button>
+            <br>
+            okay finally I got segmentation working using JavaScript
+            <button onclick="getSegment()" style="float: right;">Get Segment 1</button>
+            <br> -->
+                <h2 id="Syntax" class="group">Syntax</h2>
+                <?php
+               echo "<table>";
+               echo "<tr>";
+               echo "<th>";
+               echo "Add a new Code Panel:";
+               echo "</th>";
+               echo "</tr>";
+               echo "<tr>";
+               echo "<td>";
+               echo "Enter title:";
+               echo "</td>";
+               echo "<td>";
+               echo "<input type='text' id='newCodePanelTitle'>";
+               echo "</td>";
+               echo "</tr>";
+               echo "<tr>";
+               echo "<td>";
+               echo "Enter description:";
+               echo "</td>";
+               echo "<td>";
+               echo "<input type='text' id='newCodePanelPreDescription'>";
+               echo "</td>";
+               echo "</tr>";
+               echo "<tr>";
+               echo "<td>";
+               echo "Example?:&nbsp<select id='isExample'><option value='yes'>Yes</option><option value='no'>No</option></select>";
+               echo "</td>";
+               echo "<td>";
+               echo "<button onclick='addNewCodePanel()' style='float: right;'>Add new Code Panel</button>";
+               echo "</td>";
+               echo "</tr>";
+               echo "</table>";
+
+               //echo "<script> var nonExpmlCodePnlItmArray = []; </script>";
+               $nonExampleCodePanelCount = 0;
+               $nonExampleCodePanelItemCount = 0;
+               $nonExampleCodeBlockCount = 0;
+               $nonExampleCodeNoteCount = 0;
+               $nonExampleCodeDescriptionCount = 0;
+               $nonExampleCodePanelPreDescriptionCount = 0;
+               $nonExampleCodeWarningCount = 0;
+               $deleteNonExampleCodeNoteBtnCount = 0;
+               $deleteNonExampleCodeDescriptionBtnCount = 0;
+               $deleteNonExampleCodeWarningBtnCount = 0;
+               $addNewNonExampleCodeNoteCount = 0;
+               $addNewNonExampleCodeDescriptionCount = 0;
+               $addNewNonExampleCodeWarningCount = 0;
+               $addNewNonExampleCodeBlockCount = 0;
+
+               // language count
+
+               $jsCount = 0;
+               $javaCount = 0;
+               $pythonCount = 0;
+               $rubyCount = 0;
+               $cCount = 0;
+
+               //echo "<script> var nonExampleCodePanelCount = 0; </script>";            
+               foreach ($codePanel as $codePanelObject) {
+                   if($codePanelObject->isExample == "no"){
+                   $nonExampleCodePanelCount++;
+                   //echo "<script> nonExampleCodePanelCount++; </script>";
+                   $codePanelItemActiveState = True;
+                   echo "<h3 class='subgroup' id='".$codePanelObject->title."'>".$codePanelObject->title."</h3>";
+                   $nonExampleCodePanelPreDescriptionCount++;
+                   echo "<p contenteditable='True' id='nonExampleCodePanelPreDescription".$nonExampleCodePanelPreDescriptionCount."'>".$codePanelObject->preDescription."<a href='../codeVisAlpha.php?example=".$codePanelObject->title."' target='_blank' rel='noopener'><span class='glyphicon glyphicon-export' aria-hidden='true'></span></a></p>";
+                   echo "<input type='hidden' name='codePanelId' id='nonExampleCodePanelPreDescriptionId".$nonExampleCodePanelPreDescriptionCount."' value='".$codePanelObject->codePanelId."'>";
+                   echo "<button onclick='updateNonExampleCodePanelPreDescription()' style='float: right;'>Update Description</button><br>";
+                   echo "<ul class='nav nav-tabs' role='tablist'>";
+                   //echo "<script> var nonExampleCodePanelItemCount = 0; </script>";
+
+                  $showCodePanelId = True;
+                   foreach ($codePanelItem as $codePanelnavItem) {
+                       if ($codePanelObject->codePanelId == $codePanelnavItem->codePanelId) {
+
+                       //echo "<script> nonExpmlCodePnlItmArray[".$codePanelnavItem->codePanelItemId."] = $( '#nonExampleCodePanelItem' ).text() </script>";
+
+                       $nonExampleCodePanelItemCount++;
+                       //echo "<script> nonExampleCodePanelItemCount++; </script>";
+                           if ($codePanelItemActiveState) {
+                               echo "<li role='presentation' class='active'><a href='#" . $codePanelnavItem->ariacontrols ."".$codePanelnavItem->codePanelItemId. "' name='nonExampleCodePanelItem".$nonExampleCodePanelItemCount."' id='nonExampleCodePanelItem".$nonExampleCodePanelItemCount."' contenteditable='True' aria-controls='" . $codePanelnavItem->ariacontrols . "' role='tab' data-toggle='tab'>" . $codePanelnavItem->title . "</a></li>";
+                               echo "<input type='hidden' name='nonExampleCodePanelItemId".$nonExampleCodePanelItemCount."' id='nonExampleCodePanelItemId".$nonExampleCodePanelItemCount."' value='".$codePanelnavItem->codePanelItemId."'>";
+                               $codePanelItemActiveState = False;
+                           } else {
+                               echo "<li role='presentation'><a href='#" . $codePanelnavItem->ariacontrols ."".$codePanelnavItem->codePanelItemId. "' name='nonExampleCodePanelItem".$nonExampleCodePanelItemCount."' id='nonExampleCodePanelItem".$nonExampleCodePanelItemCount."' contenteditable='True' aria-controls='" . $codePanelnavItem->ariacontrols . "' role='tab' data-toggle='tab'>" . $codePanelnavItem->title . "</a></li>";
+                               echo "<input type='hidden' name='nonExampleCodePanelItemId".$nonExampleCodePanelItemCount."' id='nonExampleCodePanelItemId".$nonExampleCodePanelItemCount."' value='".$codePanelnavItem->codePanelItemId."'>";
+                           }
+                       }
+                   }
+                   echo "</ul>";
+
+                   echo "<div class='tab-content'>";
+                   $codePanelnavItemActiveState = True;
+                   foreach ($codePanelItem as $codePanelnavItem) {
+                       if ($codePanelObject->codePanelId == $codePanelnavItem->codePanelId) {
+                           if ($codePanelnavItemActiveState) {
+                               echo "<div role='tabpanel' class='tab-pane active' id='" . $codePanelnavItem->ariacontrols ."".$codePanelnavItem->codePanelItemId. "'>";
+                               if ($codePanelObject->codePanelId == $codePanelnavItem->codePanelId) {             
+                                   echo "<script> var nonExampleCodePanelBlockCount = 0; </script>";
+
+                                   foreach ($codeBlock as $codeBlockObject) {
+                                       if ($codePanelnavItem->codePanelItemId == $codeBlockObject->codePanelItemId) {
+                                        echo "<script> nonExampleCodePanelBlockCount++; </script>";
+                                           $nonExampleCodeBlockCount++;
+                                           echo "<pre class='line-numbers'><code class='language-javascript' contenteditable='True' name='nonExampleCodeBlock' id='nonExampleCodeBlock".$nonExampleCodeBlockCount."'>" . $codeBlockObject->code . "</code></pre>";
+                                           echo "<input type='hidden' name='nonExampleCodeBlockId' id='nonExampleCodeBlockId".$nonExampleCodeBlockCount."' value='".$codeBlockObject->codeBlockId."'>";
+                                       }
+                                   }
+                                           // this section of code allows the user to add code 
+                                           $addNewNonExampleCodeBlockCount++;
+                                           echo "<br><br><input type='text' id='newNonExampleCodeBlock".$addNewNonExampleCodeBlockCount."'>&nbsp";
+                                           echo "<input type='text' id='newNonExampleCodeBlockCPIID".$addNewNonExampleCodeBlockCount."'>&nbsp";
+                                           echo "<button onclick='addNewNonExampleCodeBlock".$addNewNonExampleCodeBlockCount."()'>Add new Code</button>";
+
+                                   echo "<script> var nonExampleCodePanelNoteCount = 0; </script>";
+                                   foreach ($codeNote as $codeNoteObject) {
+                                       if ($codePanelnavItem->codePanelItemId == $codeNoteObject->codePanelItemId) {
+                                           echo "<script> nonExampleCodePanelNoteCount++; </script>";
+                                           $nonExampleCodeNoteCount++;
+                                           $deleteNonExampleCodeNoteBtnCount++;
+                                           echo "<div class='alert alert-info' role='alert' contenteditable='True' name='nonExampleCodeNote' id='nonExampleCodeNote".$nonExampleCodeNoteCount."'><strong><span class='glyphicon glyphicon-hand-right' aria-hidden='true'></span> Note: </strong>$codeNoteObject->note</div>";
+                                           echo "<input type='hidden' name='nonExampleCodeNoteId' id='nonExampleCodeNoteId".$nonExampleCodeNoteCount."' value='".$codeNoteObject->codeNoteId."'>";
+                                           echo "<button onclick='deleteNonExampleCodeNote".$deleteNonExampleCodeNoteBtnCount."()'>Delete Note</button>";
+                                       }
+                                   } 
+                                           // this section of code allows the user to add new notes to their code 
+                                           $addNewNonExampleCodeNoteCount++;
+                                           echo "<br><br><input type='text' id='newNonExampleCodeNote".$addNewNonExampleCodeNoteCount."'>&nbsp";
+                                           echo "<input type='text' id='newNonExampleCodeNoteCPIID".$addNewNonExampleCodeNoteCount."'>&nbsp";
+                                           echo "<button onclick='addNewNonExampleCodeNote".$addNewNonExampleCodeNoteCount."()'>Add new Note</button>";
+
+                                   // this section is for description of codepanelitems
+                                   echo "<ul class='list'>";
+                                   echo "<script> var nonExampleCodePanelDescriptionCount = 0; </script>";
+                                   foreach ($codeDescription as $codeDescriptionObject) {
+                                       if ($codePanelnavItem->codePanelItemId == $codeDescriptionObject->codePanelItemId) {
+                                           $nonExampleCodeDescriptionCount++;
+                                           $deleteNonExampleCodeDescriptionBtnCount++;
+                                           echo "<script> nonExampleCodePanelDescriptionCount++; </script>";
+                                           echo "<li contenteditable='True' name='nonExampleCodeDescription' id='nonExampleCodeDescription".$nonExampleCodeDescriptionCount."'>$codeDescriptionObject->description</li><button onclick='deleteNonExampleCodeDescription".$deleteNonExampleCodeDescriptionBtnCount."()'>Delete Description</button>";
+                                           echo "<input type='hidden' name='nonExampleCodeDescriptionId' id='nonExampleCodeDescriptionId".$nonExampleCodeDescriptionCount."' value='".$codeDescriptionObject->codeDescriptionId."'>";
+                                       }
+                                   }
+                                   echo "</ul>";
+
+                                  // the code below allows the user to add new description
+                                  $addNewNonExampleCodeDescriptionCount++;
+                                  echo "<input type='text' id='newNonExampleCodeDescription".$addNewNonExampleCodeDescriptionCount."'>&nbsp";
+                                  echo "<input type='text' id='newNonExampleCodeDescriptionCPIID".$addNewNonExampleCodeDescriptionCount."'>&nbsp";
+                                  echo "<button onclick='addNewNonExampleCodeDescription".$addNewNonExampleCodeDescriptionCount."()'>Add new Description</button><br><br>";
+
+                                   echo "<script> var nonExampleCodePanelWarningCount = 0; </script>";
+                                   foreach ($codeWarning as $codeWarningObject) {
+                                       if ($codePanelnavItem->codePanelItemId == $codeWarningObject->codePanelItemId) {
+                                           $nonExampleCodeWarningCount++;
+                                           $deleteNonExampleCodeWarningBtnCount++;
+                                           echo "<script> nonExampleCodePanelWarningCount++; </script>";
+                                           echo "<div class='alert alert-warning' role='alert' contenteditable='True' name='nonExampleCodeWarning' id='nonExampleCodeWarning".$nonExampleCodeWarningCount."'><strong><span class='glyphicon glyphicon-hand-right' aria-hidden='true'></span> Note: </strong>$codeWarningObject->warning</div><button onclick='deleteNonExampleCodeWarning".$deleteNonExampleCodeWarningBtnCount."()'>Delete Warning</button>";
+                                           echo "<input type='hidden' name='nonExampleCodeWarningId' id='nonExampleCodeWarningId".$nonExampleCodeWarningCount."' value='".$codeWarningObject->codeWarningId."'><br><br>";
+                                       }
+                                   }
+                                  // the code below allows the user to add new warning
+                                  $addNewNonExampleCodeWarningCount++;
+                                  echo "<input type='text' id='newNonExampleCodeWarning".$addNewNonExampleCodeWarningCount."'>&nbsp";
+                                  echo "<input type='text' id='newNonExampleCodeWarningCPIID".$addNewNonExampleCodeWarningCount."'>&nbsp";
+                                  echo "<button onclick='addNewNonExampleCodeWarning".$addNewNonExampleCodeWarningCount."()'>Add new Warning</button>";
+                               }
+                               echo "</div>";
+                               $codePanelnavItemActiveState = False;
+                           } else {
+                               echo "<div role='tabpanel' class='tab-pane' id='" . $codePanelnavItem->ariacontrols ."".$codePanelnavItem->codePanelItemId. "'>";
+                               if ($codePanelObject->codePanelId == $codePanelnavItem->codePanelId) {
+                                   foreach ($codeBlock as $codeBlockObject) {
+                                       if ($codePanelnavItem->codePanelItemId == $codeBlockObject->codePanelItemId) {
+                                           echo "<script> nonExampleCodePanelBlockCount++; </script>";
+                                           $nonExampleCodeBlockCount++;
+                                           echo "<pre class='line-numbers'><code class='language-javascript' contenteditable='True' name='nonExampleCodeBlock' id='nonExampleCodeBlock".$nonExampleCodeBlockCount."'>" . $codeBlockObject->code . "</code></pre>";
+                                           echo "<input type='hidden' name='nonExampleCodeBlockId' id='nonExampleCodeBlockId".$nonExampleCodeBlockCount."' value='".$codeBlockObject->codeBlockId."'>";
+                                       }
+                                   }
+
+                                  // this section of code allows the user to add code 
+                                           $addNewNonExampleCodeBlockCount++;
+                                           echo "<br><br><input type='text' id='newNonExampleCodeBlock".$addNewNonExampleCodeBlockCount."'>&nbsp";
+                                           echo "<input type='text' id='newNonExampleCodeBlockCPIID".$addNewNonExampleCodeBlockCount."'>&nbsp";
+                                           echo "<button onclick='addNewNonExampleCodeBlock".$addNewNonExampleCodeBlockCount."()'>Add new Code</button>";
+
+                                   foreach ($codeNote as $codeNoteObject) {
+                                       if ($codePanelnavItem->codePanelItemId == $codeNoteObject->codePanelItemId) {
+                                           echo "<script> nonExampleCodePanelNoteCount++; </script>";
+                                           $nonExampleCodeNoteCount++;
+                                           $deleteNonExampleCodeNoteBtnCount++;
+                                           echo "<div class='alert alert-info' role='alert' contenteditable='True' name='nonExampleCodeNote' id='nonExampleCodeNote".$nonExampleCodeNoteCount."'><strong><span class='glyphicon glyphicon-hand-right' aria-hidden='true'></span> Note: </strong>$codeNoteObject->note</div>";
+                                           echo "<input type='hidden' name='nonExampleCodeNoteId' id='nonExampleCodeNoteId".$nonExampleCodeNoteCount."' value='".$codeNoteObject->codeNoteId."'>";
+                                           echo "<button onclick='deleteNonExampleCodeNote".$deleteNonExampleCodeNoteBtnCount."()'>Delete Note</button>";
+                                       }
+                                   }
+                                    $addNewNonExampleCodeNoteCount++;
+                                    echo "<br><br><input type='text' id='newNonExampleCodeNote".$addNewNonExampleCodeNoteCount."'>&nbsp";
+                                    echo "<input type='text' id='newNonExampleCodeNoteCPIID".$addNewNonExampleCodeNoteCount."'>&nbsp";
+                                    echo "<button onclick='addNewNonExampleCodeNote".$addNewNonExampleCodeNoteCount."()'>Add new Note</button>";
+
+                                   echo "<ul class='list'>";
+                                   foreach ($codeDescription as $codeDescriptionObject) {
+                                       if ($codePanelnavItem->codePanelItemId == $codeDescriptionObject->codePanelItemId) {
+                                           echo "<script> nonExampleCodePanelDescriptionCount++; </script>";
+                                           $nonExampleCodeDescriptionCount++;
+                                           $deleteNonExampleCodeDescriptionBtnCount++;
+                                           echo "<li contenteditable='True' name='nonExampleCodeDescription' id='nonExampleCodeDescription".$nonExampleCodeDescriptionCount."'>$codeDescriptionObject->description</li><button onclick='deleteNonExampleCodeDescription".$deleteNonExampleCodeDescriptionBtnCount."()'>Delete Description</button>";
+                                           echo "<input type='hidden' name='nonExampleCodeDescriptionId' id='nonExampleCodeDescriptionId".$nonExampleCodeDescriptionCount."' value='".$codeDescriptionObject->codeDescriptionId."'>";
+                                       }
+                                   }
+                                   echo "</ul>";
+
+                                  // the code below allows the user to add new description
+                                  $addNewNonExampleCodeDescriptionCount++;
+                                  echo "<input type='text' id='newNonExampleCodeDescription".$addNewNonExampleCodeDescriptionCount."'>&nbsp";
+                                  echo "<input type='text' id='newNonExampleCodeDescriptionCPIID".$addNewNonExampleCodeDescriptionCount."'>&nbsp";
+                                  echo "<button onclick='addNewNonExampleCodeDescription".$addNewNonExampleCodeDescriptionCount."()'>Add new Description</button><br><br>";
+
+                                   foreach ($codeWarning as $codeWarningObject) {
+                                       if ($codePanelnavItem->codePanelItemId == $codeWarningObject->codePanelItemId) {
+                                           echo "<script> nonExampleCodePanelWarningCount++; </script>";
+                                           $nonExampleCodeWarningCount++;
+                                           $deleteNonExampleCodeWarningBtnCount++;
+                                           echo "<div class='alert alert-warning' role='alert' contenteditable='True' name='nonExampleCodeWarning' id='nonExampleCodeWarning".$nonExampleCodeWarningCount."'><strong><span class='glyphicon glyphicon-hand-right' aria-hidden='true'></span> Note: </strong>$codeWarningObject->warning</div><button onclick='deleteNonExampleCodeWarning".$deleteNonExampleCodeWarningBtnCount."()'>Delete Warning</button>";
+                                           echo "<input type='hidden' name='nonExampleCodeWarningId' id='nonExampleCodeWarningId".$nonExampleCodeWarningCount."' value='".$codeWarningObject->codeWarningId."'><br><br>";
+                                       }
+                                   }
+                                  // the code below allows the user to add new warning
+                                  $addNewNonExampleCodeWarningCount++;
+                                  echo "<input type='text' id='newNonExampleCodeWarning".$addNewNonExampleCodeWarningCount."'>&nbsp";
+                                  echo "<input type='text' id='newNonExampleCodeWarningCPIID".$addNewNonExampleCodeWarningCount."'>&nbsp";
+                                  echo "<button onclick='addNewNonExampleCodeWarning".$addNewNonExampleCodeWarningCount."()'>Add new Warning</button>";
+                               }
+                               echo "</div>";
+                           }
+                       }
+                   }
+                   echo "<button onclick='updateNonExampleCodePanel()' style='float: right;'>Update Code Panel</button><br><br>";
+                   echo "<input type='hidden' id='nonExampleCodePanelId".$nonExampleCodePanelCount."' value='".$codePanelObject->codePanelId."'>";
+                   echo "<button onclick='deleteNonExampleCodePanel".$nonExampleCodePanelCount."()' style='float: right;'>Delete Code Panel</button><br>";
+                   echo "<table><tr><th>Add language:</th></tr><tr><td><input type='text' id='addNonExampleCodePanelItem".$nonExampleCodePanelCount."'></td><td>&nbsp<button onclick='addNonExampleCodePanelItem".$nonExampleCodePanelCount."()'>Add</button></td></tr></table>";
+                   echo "</div><br><br>";
+                 }
+               }
+
+               echo "<h2 class='group' id='Examples'>Examples</h2>";
+               $exampleCodePanelCount = 0;
+               $exampleCodePanelItemCount = 0;
+               $exampleCodeBlockCount = 0;
+               $exampleCodeNoteCount = 0;
+               $exampleCodeDescriptionCount = 0;
+               $exampleCodePanelPreDescriptionCount = 0;
+               $exampleCodeWarningCount = 0;
+               $deleteExampleCodeNoteBtnCount = 0;
+               $deleteExampleCodeDescriptionBtnCount = 0;
+               $deleteExampleCodeWarningBtnCount = 0;
+               $addNewExampleCodeNoteCount = 0;
+               $addNewExampleCodeDescriptionCount = 0;
+               $addNewExampleCodeWarningCount = 0;
+               $addNewExampleCodeBlockCount = 0;
+               $exampleCount = 0;
+               foreach ($codePanel as $codePanelObject) {
+                   if ($codePanelObject->isExample == "yes") {
+               $exampleCodePanelCount++;
+                       $codePanelItemActiveState = True;
+                   if(!empty($codePanelObject->title)){
+                      $exampleCount++;
+                       echo "<h3 class='subgroup' id='" . $codePanelObject->title . "'>Example " . $exampleCount . ": " . $codePanelObject->title . "</h3>";
+                   }
+                      if(empty($codePanelObject->href)){echo "<p>" . $codePanelObject->preDescription . "</p>";}
+                   if(!empty($codePanelObject->href)){echo "<p>" . $codePanelObject->preDescription . "<a href='../codeVisAlpha.php?example=" . $codePanelObject->href . "' target='_blank' rel='noopener'><span class='glyphicon glyphicon-export' aria-hidden='true'></span></a></p>";}
+
+                   echo "<ul class='nav nav-tabs' role='tablist'>";
+                       foreach ($codePanelItem as $codePanelnavItem) {
+                           if ($codePanelObject->codePanelId == $codePanelnavItem->codePanelId) {
+                               if ($codePanelItemActiveState) {
+                                   //echo "<li role='presentation' class='active'><a href='#" . $codePanelnavItem->ariacontrols ."".$codePanelnavItem->codePanelItemId. "' aria-controls='" . $codePanelnavItem->ariacontrols ."".$codePanelnavItem->codePanelItemId. "' role='tab' data-toggle='tab'>" . $codePanelnavItem->title . "</a></li>";
+
+                                   echo "<li role='presentation' class='active'><a href='#" . $codePanelnavItem->ariacontrols ."".$codePanelnavItem->codePanelItemId. "' id='exampleCodePanelItem".$exampleCodePanelItemCount."' contenteditable='True' aria-controls='" . $codePanelnavItem->ariacontrols ."".$codePanelnavItem->codePanelItemId. "' role='tab' data-toggle='tab'>" . $codePanelnavItem->title . "</a></li>";
+                                   echo "<input type='hidden' name='exampleCodePanelItemId".$exampleCodePanelItemCount."' id='exampleCodePanelItemId".$exampleCodePanelItemCount."' value='".$codePanelnavItem->codePanelItemId."'>";
+
+                                   $codePanelItemActiveState = False;
+                               } else {
+                                   //echo "<li role='presentation'><a href='#" . $codePanelnavItem->ariacontrols ."".$codePanelnavItem->codePanelItemId. "' aria-controls='" . $codePanelnavItem->ariacontrols ."".$codePanelnavItem->codePanelItemId. "' role='tab' data-toggle='tab'>" . $codePanelnavItem->title . "</a></li>";
+
+                                   echo "<li role='presentation'><a href='#" . $codePanelnavItem->ariacontrols ."".$codePanelnavItem->codePanelItemId. "' id='exampleCodePanelItem".$exampleCodePanelItemCount."' contenteditable='True' aria-controls='" . $codePanelnavItem->ariacontrols ."".$codePanelnavItem->codePanelItemId. "' role='tab' data-toggle='tab'>" . $codePanelnavItem->title . "</a></li>";
+                                   echo "<input type='hidden' name='exampleCodePanelItemId".$exampleCodePanelItemCount."' id='exampleCodePanelItemId".$exampleCodePanelItemCount."' value='".$codePanelnavItem->codePanelItemId."'>";
+                               }
+                           }
+                       }
+                       echo "</ul>";
+                       echo "<div class='tab-content'>";
+                       $codePanelnavItemActiveState = True;
+                       foreach ($codePanelItem as $codePanelnavItem) {
+                           if ($codePanelObject->codePanelId == $codePanelnavItem->codePanelId) {
+                               if ($codePanelnavItemActiveState) {
+                                   echo "<div role='tabpanel' class='tab-pane active' id='" . $codePanelnavItem->ariacontrols ."".$codePanelnavItem->codePanelItemId. "'>";
+                                   if ($codePanelObject->codePanelId == $codePanelnavItem->codePanelId) {
+
+                                       foreach ($codeBlock as $codeBlockObject) {
+                                           if ($codePanelnavItem->codePanelItemId == $codeBlockObject->codePanelItemId) {
+                                               $exampleCodeBlockCount++;
+                                           echo "<pre class='line-numbers'><code class='language-javascript' contenteditable='True' name='exampleCodeBlock' id='exampleCodeBlock".$exampleCodeBlockCount."'>" . $codeBlockObject->code . "</code></pre>";
+                                           echo "<input type='hidden' name='exampleCodeBlockId' id='exampleCodeBlockId".$exampleCodeBlockCount."' value='".$codeBlockObject->codeBlockId."'>";
+                                           }
+                                       }
+                                           // this section of code allows the user to add code 
+                                           $addNewExampleCodeBlockCount++;
+                                           echo "<br><br><input type='text' id='newExampleCodeBlock".$addNewExampleCodeBlockCount."'>&nbsp";
+                                           echo "<input type='text' id='newExampleCodeBlockCPIID".$addNewExampleCodeBlockCount."'>&nbsp";
+                                           echo "<button onclick='addNewExampleCodeBlock".$addNewExampleCodeBlockCount."()'>Add new Code</button>";
+
+                                       foreach ($codeNote as $codeNoteObject) {
+                                           if ($codePanelnavItem->codePanelItemId == $codeNoteObject->codePanelItemId) {
+                                           $exampleCodeNoteCount++;
+                                           $deleteExampleCodeNoteBtnCount++;
+                                           echo "<div class='alert alert-info' role='alert' contenteditable='True' name='exampleCodeNote' id='exampleCodeNote".$exampleCodeNoteCount."'><strong><span class='glyphicon glyphicon-hand-right' aria-hidden='true'></span> Note: </strong>$codeNoteObject->note</div>";
+                                           echo "<input type='hidden' name='exampleCodeNoteId' id='exampleCodeNoteId".$exampleCodeNoteCount."' value='".$codeNoteObject->codeNoteId."'>";
+                                           echo "<button onclick='deleteExampleCodeNote".$deleteExampleCodeNoteBtnCount."()'>Delete Note</button>";    
+                                           }
+                                       }
+
+                                        // this section of code allows the user to add new notes to their code 
+                                           $addNewExampleCodeNoteCount++;
+                                           echo "<br><br><input type='text' id='newExampleCodeNote".$addNewExampleCodeNoteCount."'>&nbsp";
+                                           echo "<input type='text' id='newExampleCodeNoteCPIID".$addNewExampleCodeNoteCount."'>&nbsp";
+                                           echo "<button onclick='addNewExampleCodeNote".$addNewExampleCodeNoteCount."()'>Add new Note</button>";
+
+                                       echo "<ul class='list'>";
+                                       foreach ($codeDescription as $codeDescriptionObject) {
+                                           if ($codePanelnavItem->codePanelItemId == $codeDescriptionObject->codePanelItemId) {
+                                               $exampleCodeDescriptionCount++;
+                                           $deleteExampleCodeDescriptionBtnCount++;
+                                           echo "<li contenteditable='True' name='exampleCodeDescription' id='exampleCodeDescription".$exampleCodeDescriptionCount."'>$codeDescriptionObject->description</li><button onclick='deleteExampleCodeDescription".$deleteExampleCodeDescriptionBtnCount."()'>Delete Description</button>";
+                                           echo "<input type='hidden' name='exampleCodeDescriptionId' id='exampleCodeDescriptionId".$exampleCodeDescriptionCount."' value='".$codeDescriptionObject->codeDescriptionId."'>";
+                                           }
+                                       }
+                                       echo "</ul>";
+
+                                       // the code below allows the user to add new description
+                                       $addNewExampleCodeDescriptionCount++;
+                                       echo "<input type='text' id='newExampleCodeDescription".$addNewExampleCodeDescriptionCount."'>&nbsp";
+                                       echo "<input type='text' id='newExampleCodeDescriptionCPIID".$addNewExampleCodeDescriptionCount."'>&nbsp";
+                                       echo "<button onclick='addNewExampleCodeDescription".$addNewExampleCodeDescriptionCount."()'>Add new Description</button><br><br>";
+
+                                       foreach ($codeWarning as $codeWarningObject) {
+                                           if ($codePanelnavItem->codePanelItemId == $codeWarningObject->codePanelItemId) {
+                                               $exampleCodeWarningCount++;
+                                           $deleteExampleCodeWarningBtnCount++;
+                                           echo "<div class='alert alert-warning' role='alert' contenteditable='True' name='exampleCodeWarning' id='exampleCodeWarning".$exampleCodeWarningCount."'><strong><span class='glyphicon glyphicon-hand-right' aria-hidden='true'></span> Note: </strong>$codeWarningObject->warning</div><button onclick='deleteExampleCodeWarning".$deleteExampleCodeWarningBtnCount."()'>Delete Warning</button>";
+                                           echo "<input type='hidden' name='exampleCodeWarningId' id='exampleCodeWarningId".$exampleCodeWarningCount."' value='".$codeWarningObject->codeWarningId."'><br><br>";
+                                           }
+                                       }
+                                  // the code below allows the user to add new warning
+                                  $addNewExampleCodeWarningCount++;
+                                  echo "<input type='text' id='newExampleCodeWarning".$addNewExampleCodeWarningCount."'>&nbsp";
+                                  echo "<input type='text' id='newExampleCodeWarningCPIID".$addNewExampleCodeWarningCount."'>&nbsp";
+                                  echo "<button onclick='addNewExampleCodeWarning".$addNewExampleCodeWarningCount."()'>Add new Warning</button>";
+                                   }
+                                   echo "</div>";
+                                   $codePanelnavItemActiveState = False;
+                               } else {
+                                   echo "<div role='tabpanel' class='tab-pane' id='" . $codePanelnavItem->ariacontrols ."".$codePanelnavItem->codePanelItemId. "'>";
+                                   if ($codePanelObject->codePanelId == $codePanelnavItem->codePanelId) {
+                                       foreach ($codeBlock as $codeBlockObject) {
+                                           if ($codePanelnavItem->codePanelItemId == $codeBlockObject->codePanelItemId) {
+                                              $exampleCodeBlockCount++;
+                                           echo "<pre class='line-numbers'><code class='language-javascript' contenteditable='True' name='exampleCodeBlock' id='exampleCodeBlock".$exampleCodeBlockCount."'>" . $codeBlockObject->code . "</code></pre>";
+                                           echo "<input type='hidden' name='exampleCodeBlockId' id='exampleCodeBlockId".$exampleCodeBlockCount."' value='".$codeBlockObject->codeBlockId."'>";
+                                           }
+                                       }
+
+                                       // this section of code allows the user to add code 
+                                           $addNewExampleCodeBlockCount++;
+                                           echo "<br><br><input type='text' id='newExampleCodeBlock".$addNewExampleCodeBlockCount."'>&nbsp";
+                                           echo "<input type='text' id='newExampleCodeBlockCPIID".$addNewExampleCodeBlockCount."'>&nbsp";
+                                           echo "<button onclick='addNewExampleCodeBlock".$addNewExampleCodeBlockCount."()'>Add new Code</button>";
+
+                                       foreach ($codeNote as $codeNoteObject) {
+                                           if ($codePanelnavItem->codePanelItemId == $codeNoteObject->codePanelItemId) {
+                                               $exampleCodeNoteCount++;
+                                           $deleteExampleCodeNoteBtnCount++;
+                                           echo "<div class='alert alert-info' role='alert' contenteditable='True' name='exampleCodeNote' id='exampleCodeNote".$exampleCodeNoteCount."'><strong><span class='glyphicon glyphicon-hand-right' aria-hidden='true'></span> Note: </strong>$codeNoteObject->note</div>";
+                                           echo "<input type='hidden' name='exampleCodeNoteId' id='exampleCodeNoteId".$exampleCodeNoteCount."' value='".$codeNoteObject->codeNoteId."'>";
+                                           echo "<button onclick='deleteExampleCodeNote".$deleteExampleCodeNoteBtnCount."()'>Delete Note</button>"; 
+                                           }
+                                       }
+
+                                       // this section of code allows the user to add new notes to their code 
+                                           $addNewExampleCodeNoteCount++;
+                                           echo "<br><br><input type='text' id='newExampleCodeNote".$addNewExampleCodeNoteCount."'>&nbsp";
+                                           echo "<input type='text' id='newExampleCodeNoteCPIID".$addNewExampleCodeNoteCount."'>&nbsp";
+                                           echo "<button onclick='addNewExampleCodeNote".$addNewExampleCodeNoteCount."()'>Add new Note</button>";
+
+                                       echo "<ul class='list'>";
+                                       foreach ($codeDescription as $codeDescriptionObject) {
+                                           if ($codePanelnavItem->codePanelItemId == $codeDescriptionObject->codePanelItemId) {
+                                               $exampleCodeDescriptionCount++;
+                                           $deleteExampleCodeDescriptionBtnCount++;
+                                           echo "<li contenteditable='True' name='exampleCodeDescription' id='exampleCodeDescription".$exampleCodeDescriptionCount."'>$codeDescriptionObject->description</li><button onclick='deleteExampleCodeDescription".$deleteExampleCodeDescriptionBtnCount."()'>Delete Description</button>";
+                                           echo "<input type='hidden' name='exampleCodeDescriptionId' id='exampleCodeDescriptionId".$exampleCodeDescriptionCount."' value='".$codeDescriptionObject->codeDescriptionId."'>";
+                                           }
+                                       }
+                                       echo "</ul>";
+
+                                       // the code below allows the user to add new description
+                                       $addNewExampleCodeDescriptionCount++;
+                                       echo "<input type='text' id='newExampleCodeDescription".$addNewExampleCodeDescriptionCount."'>&nbsp";
+                                       echo "<input type='text' id='newExampleCodeDescriptionCPIID".$addNewExampleCodeDescriptionCount."'>&nbsp";
+                                       echo "<button onclick='addNewExampleCodeDescription".$addNewExampleCodeDescriptionCount."()'>Add new Description</button><br><br>";
+
+                                       foreach ($codeWarning as $codeWarningObject) {
+                                           if ($codePanelnavItem->codePanelItemId == $codeWarningObject->codePanelItemId) {
+                                                $exampleCodeWarningCount++;
+                                           $deleteExampleCodeWarningBtnCount++;
+                                           echo "<div class='alert alert-warning' role='alert' contenteditable='True' name='exampleCodeWarning' id='exampleCodeWarning".$exampleCodeWarningCount."'><strong><span class='glyphicon glyphicon-hand-right' aria-hidden='true'></span> Note: </strong>$codeWarningObject->warning</div><button onclick='deleteExampleCodeWarning".$deleteExampleCodeWarningBtnCount."()'>Delete Warning</button>";
+                                           echo "<input type='hidden' name='exampleCodeWarningId' id='exampleCodeWarningId".$exampleCodeWarningCount."' value='".$codeWarningObject->codeWarningId."'><br><br>";
+                                           }
+                                       }
+                                       // the code below allows the user to add new warning
+                                  $addNewExampleCodeWarningCount++;
+                                  echo "<input type='text' id='newExampleCodeWarning".$addNewExampleCodeWarningCount."'>&nbsp";
+                                  echo "<input type='text' id='newExampleCodeWarningCPIID".$addNewExampleCodeWarningCount."'>&nbsp";
+                                  echo "<button onclick='addNewExampleCodeWarning".$addNewExampleCodeWarningCount."()'>Add new Warning</button>";
+                                   }
+                                   echo "</div>";
+                               }
+                           }
+                       }
+                   echo "<button onclick='updateExampleCodePanel()' style='float: right;'>Update Code Panel</button><br><br>";
+                   echo "<input type='hidden' id='exampleCodePanelId".$exampleCodePanelCount."' value='".$codePanelObject->codePanelId."'>";
+                   echo "<button onclick='deleteExampleCodePanel".$exampleCodePanelCount."()' style='float: right;'>Delete Code Panel</button><br>";
+                   echo "<table><tr><th>Add language:</th></tr><tr><td><input type='text' id='addExampleCodePanelItem".$exampleCodePanelCount."'></td><td>&nbsp<button onclick='addExampleCodePanelItem".$exampleCodePanelCount."()'>Add</button></td></tr></table>";
+                   echo "</div><br><br>";
+                   }
+               }
+               ?>
+        </div>
+    
+        <div class="row">
+            <nav class="col-md-3 bs-docs-sidebar hidden-print hidden-sm hidden-xs">
+                <ul id="sidebar" class="nav nav-stacked">
+                    <li>
+                        <a href="#Definition">Definition</a>
+                    </li>
+                    <li>
+                        <a href="#Syntax">Syntax</a>
+                        <ul class="nav nav-stacked">
+                          <?php
+                          //foreach($codePanel as $codePanel){
+                          //if($codePanel->isExample == 'no'){
+                          //  echo "<li><a href='#".$codePanel->title."'>".$codePanel->title."</a></li>";
+                          //}
+                          //}
+                            ?>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#Examples">Examples</a>
+                        <ul class="nav nav-stacked">
+                         <?php
+                         // foreach($codePanel as $codePanel){
+                         // if($codePanel->isExample == 'yes'){
+                         //   echo "<li><a href='#".$codePanel->title."'>".$codePanel->title."</a></li>";
+                         // }
+                         // }
+                         ?>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </main>
+    <nav class="navbar navbar-default no-margin-bottom">
+        <div class="container">
+            <p class="navbar-text navbar-right">&copy; Copyright 2016-2018 <a href="https://www.westminster.ac.uk" class="navbar-link">University of Westminster</a></p>
+        </div>
+    </nav>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+    <script src="http://localhost:8080/learntocodeV12/prism/prism.js"></script>
+    <script src="http://localhost:8080/learntocodeV12/prism/prism-line-numbers.js"></script>
+    <script src="http://localhost:8080/learntocodeV12/prism/prism-line-highlight.js"></script>
+
+    <!-- Attention! Attention! Attention! Attention! Attention! Attention! Attention! Attention! -->
+     <!-- if I comment this then the compare tab dissappears however the code is less broken! -->
+    <!-- <script src="http://localhost:8080/learntocodeV12/lessons.js"></script> -->
+    
+    <script>
+        $('body').scrollspy({
+            target: '.bs-docs-sidebar',
+            offset: 60
+        });
+        $("#sidebar").affix({
+            offset: {
+                top: 80
+            }
+        });
+    </script>
+
+    <script>
+        function updateDefinition() {
+            var definitionId = $("#definitionId").val();
+            var definition = $("#definition").text();
+            $.ajax({
+                method: "POST",
+                data: {
+                    definitionId: definitionId,
+                    definition: definition
+                },
+                url: "<?php echo base_url();?>UpdateController/udpdateDefinition/",
+                success: function(result) {
+                    alert("You have successfully updated the definition of this page.");
+                },
+                error: function() {
+                    alert("Ups, something went wrong updating definition, please refreh page and try again.");
+                }
+            });
+        }
+
+        function updateNonExampleCodePanelPreDescription() {
+            var nonExampleCodePanelPreDescriptionCount = <?php echo $nonExampleCodePanelPreDescriptionCount?>;
+            var nonExampleCodePanelPreDescriptionId;
+            var nonExampleCodePanelPreDescription;
+            for (var i = 1; i <= nonExampleCodePanelPreDescriptionCount; i++) {
+                nonExampleCodePanelPreDescriptionId = $("#nonExampleCodePanelPreDescriptionId" + i).val();
+                nonExampleCodePanelPreDescription = $("#nonExampleCodePanelPreDescription" + i).text();
+
+                $.ajax({
+                    method: "POST",
+                    data: {
+                        id: nonExampleCodePanelPreDescriptionId,
+                        description: nonExampleCodePanelPreDescription
+                    },
+                    url: "<?php echo base_url();?>UpdateController/updateNonExampleCodePanelPreDescription/",
+                    success: function(result) {
+                        // alert("You have successfully updated the description.");
+                    },
+                    error: function() {
+                        alert("Ups, something went wrong updating description.");
+                    }
+                });
+            }
+
+        }
+
+        function updateNonExampleCodePanel() {
+
+            var nonExampleCodePanelItemCount = <?php echo $nonExampleCodePanelItemCount?>;
+            var nonExampleCodeBlockCount = <?php echo $nonExampleCodeBlockCount?>;
+            var nonExampleCodeNoteCount = <?php echo $nonExampleCodeNoteCount?>;
+            var nonExampleCodeDescriptionCount = <?php echo $nonExampleCodeDescriptionCount?>;
+            var nonExampleCodeWarningCount = <?php echo $nonExampleCodeWarningCount?>;
+            
+            var nonExampleCodePanelItemId;
+            var nonExampleCodePanelItem;
+            for (var i = 1; i <= nonExampleCodePanelItemCount; i++) {
+                nonExampleCodePanelItemId = $("#nonExampleCodePanelItemId" + i).val();
+                nonExampleCodePanelItem = $("#nonExampleCodePanelItem" + i).text();
+                console.log(nonExampleCodePanelItemId);
+                console.log(nonExampleCodePanelItem);
+
+                $.ajax({
+                    method: "POST",
+                    data: {
+                        id: nonExampleCodePanelItemId,
+                        title: nonExampleCodePanelItem
+                    },
+                    url: "<?php echo base_url();?>UpdateController/updateNonExampleCodePanelItem/",
+                    success: function(result) {
+                    },
+                    error: function() {
+                        alert("Ups, something went wrong!");
+                    }
+                });
+            }
+
+            var nonExampleCodeBlockId;
+            var nonExampleCodeBlock;
+            for (var i = 1; i <= nonExampleCodeBlockCount; i++) {
+                nonExampleCodeBlockId = $("#nonExampleCodeBlockId" + i).val();
+                nonExampleCodeBlock = $("#nonExampleCodeBlock" + i).text();
+                if (nonExampleCodeBlock != '') {
+                    console.log(nonExampleCodeBlockId);
+                    console.log(nonExampleCodeBlock);
+
+                    $.ajax({
+                        method: "POST",
+                        data: {
+                            id: nonExampleCodeBlockId,
+                            codeBlock: nonExampleCodeBlock
+                        },
+                        url: "<?php echo base_url();?>UpdateController/updateNonExampleCodeBlock/",
+                        success: function(result) {
+                        },
+                        error: function() {
+                            alert("Ups, something went wrong!");
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        method: "POST",
+                        data: {
+                            id: nonExampleCodeBlockId
+                        },
+                        url: "<?php echo base_url();?>UpdateController/deleteNonExampleCodeBlock/",
+                        success: function(result) {
+                        },
+                        error: function() {
+                            alert("Ups, something went wrong!");
+                        }
+                    });
+                }
+            }
+
+            var nonExampleCodeNoteId;
+            var nonExampleCodeNote;
+            for (var i = 1; i <= nonExampleCodeNoteCount; i++) {
+                nonExampleCodeNoteId = $("#nonExampleCodeNoteId" + i).val();
+                nonExampleCodeNote = $("#nonExampleCodeNote" + i).text();
+                console.log(nonExampleCodeNoteId);
+                console.log(nonExampleCodeNote);
+
+                $.ajax({
+                    method: "POST",
+                    data: {
+                        id: nonExampleCodeNoteId,
+                        codeNote: nonExampleCodeNote
+                    },
+                    url: "<?php echo base_url();?>UpdateController/updateNonExampleCodeNote/",
+                    success: function(result) {
+                    },
+                    error: function() {
+                        alert("Ups, something went wrong!");
+                    }
+                });
+            }
+
+            var nonExampleCodeDescriptionId;
+            var nonExampleCodeDescription;
+            for (var i = 1; i <= nonExampleCodeDescriptionCount; i++) {
+                nonExampleCodeDescriptionId = $("#nonExampleCodeDescriptionId" + i).val();
+                nonExampleCodeDescription = $("#nonExampleCodeDescription" + i).text();
+                console.log(nonExampleCodeNoteId);
+                console.log(nonExampleCodeNote);
+
+                $.ajax({
+                    method: "POST",
+                    data: {
+                        id: nonExampleCodeDescriptionId,
+                        codeDescription: nonExampleCodeDescription
+                    },
+                    url: "<?php echo base_url();?>UpdateController/updateNonExampleCodeDescription/",
+                    success: function(result) {
+                    },
+                    error: function() {
+                        alert("Ups, something went wrong!");
+                    }
+                });
+            }
+
+            var nonExampleCodeWarningId;
+            var nonExampleCodeWarning;
+            for (var i = 1; i <= nonExampleCodeWarningCount; i++) {
+                nonExampleCodeWarningId = $("#nonExampleCodeWarningId" + i).val();
+                nonExampleCodeWarning = $("#nonExampleCodeWarning" + i).text();
+                console.log(nonExampleCodeWarningId);
+                console.log(nonExampleCodeWarning);
+
+                $.ajax({
+                    method: "POST",
+                    data: {
+                        id: nonExampleCodeWarningId,
+                        codeWarning: nonExampleCodeWarning
+                    },
+                    url: "<?php echo base_url();?>UpdateController/updateNonExampleCodeWarning/",
+                    success: function(result) {
+                    },
+                    error: function() {
+                        alert("Ups, something went wrong!");
+                    }
+                });
+            }
+      //location.reload();
+        }
+    
+    function updateExampleCodePanel() {
+
+            var exampleCodePanelItemCount = <?php echo $exampleCodePanelItemCount?>;
+            var exampleCodeBlockCount = <?php echo $exampleCodeBlockCount?>;
+            var exampleCodeNoteCount = <?php echo $exampleCodeNoteCount?>;
+            var exampleCodeDescriptionCount = <?php echo $exampleCodeDescriptionCount?>;
+            var exampleCodeWarningCount = <?php echo $exampleCodeWarningCount?>;
+
+            var exampleCodePanelItemId;
+            var exampleCodePanelItem;
+            for (var i = 1; i <= exampleCodePanelItemCount; i++) {
+                exampleCodePanelItemId = $("#exampleCodePanelItemId" + i).val();
+                exampleCodePanelItem = $("#exampleCodePanelItem" + i).text();
+                console.log(exampleCodePanelItemId);
+                console.log(exampleCodePanelItem);
+
+                $.ajax({
+                    method: "POST",
+                    data: {
+                        id: exampleCodePanelItemId,
+                        title: exampleCodePanelItem
+                    },
+                    url: "<?php echo base_url();?>UpdateController/updateExampleCodePanelItem/",
+                    success: function(result) {
+                    },
+                    error: function() {
+                        alert("Ups, something went wrong!");
+                    }
+                });
+            }
+
+            var exampleCodeBlockId;
+            var exampleCodeBlock;
+            for (var i = 1; i <= exampleCodeBlockCount; i++) {
+                exampleCodeBlockId = $("#exampleCodeBlockId" + i).val();
+                exampleCodeBlock = $("#exampleCodeBlock" + i).text();
+                if (exampleCodeBlock != '') {
+                    console.log(exampleCodeBlockId);
+                    console.log(exampleCodeBlock);
+
+                    $.ajax({
+                        method: "POST",
+                        data: {
+                            id: exampleCodeBlockId,
+                            codeBlock: exampleCodeBlock
+                        },
+                        url: "<?php echo base_url();?>UpdateController/updateExampleCodeBlock/",
+                        success: function(result) {
+                        },
+                        error: function() {
+                            alert("Ups, something went wrong!");
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        method: "POST",
+                        data: {
+                            id: exampleCodeBlockId
+                        },
+                        url: "<?php echo base_url();?>UpdateController/deleteExampleCodeBlock/",
+                        success: function(result) {
+                        },
+                        error: function() {
+                            alert("Ups, something went wrong!");
+                        }
+                    });
+                }
+            }
+
+            var exampleCodeNoteId;
+            var exampleCodeNote;
+            for (var i = 1; i <= exampleCodeNoteCount; i++) {
+                exampleCodeNoteId = $("#exampleCodeNoteId" + i).val();
+                exampleCodeNote = $("#exampleCodeNote" + i).text();
+                console.log(exampleCodeNoteId);
+                console.log(exampleCodeNote);
+
+                $.ajax({
+                    method: "POST",
+                    data: {
+                        id: exampleCodeNoteId,
+                        codeNote: exampleCodeNote
+                    },
+                    url: "<?php echo base_url();?>UpdateController/updateExampleCodeNote/",
+                    success: function(result) {
+                    },
+                    error: function() {
+                        alert("Ups, something went wrong!");
+                    }
+                });
+            }
+
+            var exampleCodeDescriptionId;
+            var exampleCodeDescription;
+            for (var i = 1; i <= exampleCodeDescriptionCount; i++) {
+                exampleCodeDescriptionId = $("#exampleCodeDescriptionId" + i).val();
+                exampleCodeDescription = $("#exampleCodeDescription" + i).text();
+                console.log(exampleCodeDescriptionId);
+                console.log(exampleCodeDescription);
+
+                $.ajax({
+                    method: "POST",
+                    data: {
+                        id: exampleCodeDescriptionId,
+                        codeDescription: exampleCodeDescription
+                    },
+                    url: "<?php echo base_url();?>UpdateController/updateExampleCodeDescription/",
+                    success: function(result) {
+                    },
+                    error: function() {
+                        alert("Ups, something went wrong!");
+                    }
+                });
+            }
+
+            var exampleCodeWarningId;
+            var exampleCodeWarning;
+            for (var i = 1; i <= exampleCodeWarningCount; i++) {
+                exampleCodeWarningId = $("#exampleCodeWarningId" + i).val();
+                exampleCodeWarning = $("#exampleCodeWarning" + i).text();
+                console.log(exampleCodeWarningId);
+                console.log(exampleCodeWarning);
+
+                $.ajax({
+                    method: "POST",
+                    data: {
+                        id: exampleCodeWarningId,
+                        codeWarning: exampleCodeWarning
+                    },
+                    url: "<?php echo base_url();?>UpdateController/updateExampleCodeWarning/",
+                    success: function(result) {
+                    },
+                    error: function() {
+                        alert("Ups, something went wrong!");
+                    }
+                });
+            }
+      //location.reload();
+        }
+
+        function addNewCodePanel() {
+            // this snippet below splits the url, so that I can parse the information I want to the model.
+            var pathArray = window.location.pathname.split('/');
+            var navigationItemId = pathArray[6];
+            var title = $("#newCodePanelTitle").val();
+            var preDescription = $("#newCodePanelPreDescription").val();
+            var isExample = $("#isExample option:selected").val();
+            console.log(title + " " + preDescription + " " + isExample + " " + navigationItemId);
+            $.ajax({
+                method: "POST",
+                data: {
+                    title: title,
+                    preDescription: preDescription,
+                    isExample: isExample,
+                    navigationItemId: navigationItemId
+                },
+                url: "<?php echo base_url();?>UpdateController/addNewCodePanel/",
+                success: function(result) {
+                    location.reload();
+                },
+                error: function() {
+                    alert("Ups, something went wrong!");
+                }
+            });
+        }
+
+        <?php
+
+            // This is the code which is supposed to change the page however it doesn't Attention!!! Attention!!!
+            for ($i = 1; $i <= $navItemsCount; $i++) {
+                echo "var pageId; var pageUrl; function goToPage" . $i . "(){ pageId = $('#pageId" . $i . "').val(); pageUrl = $('#pageUrl" . $i . "').val(); $.ajax({ method: 'POST', data: { pageId: pageId, pageUrl: pageUrl}, url: '".base_url()."UpdateController/goToPage/'+pageUrl+'/'+pageId, success: function(result) {},error: function() {}});}";
+            }
+
+            for ($i = 1; $i <= $deleteNonExampleCodeNoteBtnCount; $i++) {
+                echo "var nonExampleCodeNoteId; function deleteNonExampleCodeNote" . $i . "(){ nonExampleCodeNoteId = $('#nonExampleCodeNoteId" . $i . "').val(); $.ajax({ method: 'POST', data: { id: nonExampleCodeNoteId}, url: '".base_url()."UpdateController/deleteNonExampleCodeNote/', success: function(result) {location.reload();},error: function() {}});}";
+            }
+
+            for ($i = 1; $i <= $deleteNonExampleCodeDescriptionBtnCount; $i++) {
+                echo "var nonExampleCodeDescriptionId; function deleteNonExampleCodeDescription" . $i . "(){ nonExampleCodeDescriptionId = $('#nonExampleCodeDescriptionId" . $i . "').val(); $.ajax({ method: 'POST', data: { id: nonExampleCodeDescriptionId}, url: '".base_url()."UpdateController/deleteNonExampleCodeDescription/', success: function(result) {location.reload();},error: function() {}});}";
+            }
+
+            for ($i = 1; $i <= $deleteNonExampleCodeWarningBtnCount; $i++) {
+                echo "var nonExampleCodeWarningId; function deleteNonExampleCodeWarning" . $i . "(){ nonExampleCodeWarningId = $('#nonExampleCodeWarningId" . $i . "').val(); $.ajax({ method: 'POST', data: { id: nonExampleCodeWarningId}, url: '".base_url()."UpdateController/deleteNonExampleCodeWarning/', success: function(result) {location.reload();},error: function() {}});}";
+            }
+
+            for ($i = 1; $i <= $deletePageDefinitionBtnCount; $i++) {
+                echo "var definitionId; function deletePageDefinition" . $i . "(){ definitionId = $('#definitionId').val(); $.ajax({ method: 'POST', data: { id: definitionId}, url: '".base_url()."UpdateController/deletePageDefinition/', success: function(result) {location.reload();},error: function() {}});}";
+            }
+
+            for ($i = 1; $i <= $nonExampleCodePanelCount; $i++) {
+                echo "var codePanelId; function deleteNonExampleCodePanel" . $i . "(){ codePanelId = $('#nonExampleCodePanelId".$i."').val(); $.ajax({ method: 'POST', data: { id: codePanelId}, url: '".base_url()."UpdateController/deleteNonExampleCodePanel/', success: function(result) {location.reload();},error: function() {}});}";
+            }
+
+            for ($i = 1; $i <= $addNewNonExampleCodeBlockCount; $i++) {
+              echo "var codePanelItemId; var newNonExampleCodeBlock; function addNewNonExampleCodeBlock" . $i . "(){ codePanelItemId = $('#newNonExampleCodeBlockCPIID" . $i . "').val(); newNonExampleCodeBlock = $('#newNonExampleCodeBlock" . $i . "').val(); if(codePanelItemId !='' && newNonExampleCodeBlock !=''){ $.ajax({ method: 'POST', data: { codePanelItemId: codePanelItemId, newNonExampleCodeBlock: newNonExampleCodeBlock}, url: '".base_url()."UpdateController/addNewNonExampleCodeBlock/', success: function(result) {location.reload();},error: function() {}});}else{console.log('codeBlock or codePanelItemId information not provided!')}}";
+            }
+
+            for ($i = 1; $i <= $addNewNonExampleCodeNoteCount; $i++) {
+              echo "var codePanelItemId; var newNonExampleCodeNote; function addNewNonExampleCodeNote" . $i . "(){ codePanelItemId = $('#newNonExampleCodeNoteCPIID" . $i . "').val(); newNonExampleCodeNote = $('#newNonExampleCodeNote" . $i . "').val(); if(codePanelItemId !='' && newNonExampleCodeNote !=''){ $.ajax({ method: 'POST', data: { codePanelItemId: codePanelItemId, newNonExampleCodeNote: newNonExampleCodeNote}, url: '".base_url()."UpdateController/addNewNonExampleCodeNote/', success: function(result) {location.reload();},error: function() {}});}else{console.log('codeNote or codePanelItemId information not provided!')}}";
+            }
+
+            for ($i = 1; $i <= $addNewNonExampleCodeDescriptionCount; $i++) {
+              echo "var codePanelItemId; var newNonExampleCodeDescription; function addNewNonExampleCodeDescription" . $i . "(){ codePanelItemId = $('#newNonExampleCodeDescriptionCPIID" . $i . "').val(); newNonExampleCodeDescription = $('#newNonExampleCodeDescription" . $i . "').val(); if(codePanelItemId !='' && newNonExampleCodeDescription !=''){ $.ajax({ method: 'POST', data: { codePanelItemId: codePanelItemId, newNonExampleCodeDescription: newNonExampleCodeDescription}, url: '".base_url()."UpdateController/addNewNonExampleCodeDescription/', success: function(result) {location.reload();},error: function() {}});}else{console.log('codeDescription or codePanelItemId information not provided!')}}";
+            }
+
+            for ($i = 1; $i <= $addNewNonExampleCodeWarningCount; $i++) {
+              echo "var codePanelItemId; var newNonExampleCodeWarning; function addNewNonExampleCodeWarning" . $i . "(){ codePanelItemId = $('#newNonExampleCodeWarningCPIID" . $i . "').val(); newNonExampleCodeWarning = $('#newNonExampleCodeWarning" . $i . "').val(); if(codePanelItemId !='' && newNonExampleCodeWarning !=''){ $.ajax({ method: 'POST', data: { codePanelItemId: codePanelItemId, newNonExampleCodeWarning: newNonExampleCodeWarning}, url: '".base_url()."UpdateController/addNewNonExampleCodeWarning/', success: function(result) {location.reload();},error: function() {}});}else{console.log('codeWarning or codePanelItemId information not provided!')}}";
+            }
+
+            for ($i = 1; $i <= $nonExampleCodePanelCount; $i++) {
+                echo "var codePanelId; var nonExampleCodePanelItem; function addNonExampleCodePanelItem" . $i . "(){ codePanelId = $('#nonExampleCodePanelId".$i."').val(); nonExampleCodePanelItem = $('#addNonExampleCodePanelItem".$i."').val(); $.ajax({ method: 'POST', data: { codePanelId: codePanelId, nonExampleCodePanelItem: nonExampleCodePanelItem}, url: '".base_url()."UpdateController/addNonExampleCodePanelItem/', success: function(result) {location.reload();},error: function() {}});}";
+            }
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            for ($i = 1; $i <= $deleteExampleCodeNoteBtnCount; $i++) {
+                echo "var exampleCodeNoteId; function deleteExampleCodeNote" . $i . "(){ exampleCodeNoteId = $('#exampleCodeNoteId" . $i . "').val(); $.ajax({ method: 'POST', data: { id: exampleCodeNoteId}, url: '".base_url()."UpdateController/deleteExampleCodeNote/', success: function(result) {location.reload();},error: function() {}});}";
+            }
+
+            for ($i = 1; $i <= $deleteExampleCodeDescriptionBtnCount; $i++) {
+                echo "var exampleCodeDescriptionId; function deleteExampleCodeDescription" . $i . "(){ exampleCodeDescriptionId = $('#exampleCodeDescriptionId" . $i . "').val(); $.ajax({ method: 'POST', data: { id: exampleCodeDescriptionId}, url: '".base_url()."UpdateController/deleteExampleCodeDescription/', success: function(result) {location.reload();},error: function() {}});}";
+            }
+
+            for ($i = 1; $i <= $deleteExampleCodeWarningBtnCount; $i++) {
+                echo "var exampleCodeWarningId; function deleteExampleCodeWarning" . $i . "(){ exampleCodeWarningId = $('#exampleCodeWarningId" . $i . "').val(); $.ajax({ method: 'POST', data: { id: exampleCodeWarningId}, url: '".base_url()."UpdateController/deleteExampleCodeWarning/', success: function(result) {location.reload();},error: function() {}});}";
+            }
+
+            for ($i = 1; $i <= $exampleCodePanelCount; $i++) {
+                echo "var codePanelId; function deleteExampleCodePanel" . $i . "(){ codePanelId = $('#exampleCodePanelId".$i."').val(); $.ajax({ method: 'POST', data: { id: codePanelId}, url: '".base_url()."UpdateController/deleteExampleCodePanel/', success: function(result) {location.reload();},error: function() {}});}";
+            }
+
+            for ($i = 1; $i <= $addNewExampleCodeBlockCount; $i++) {
+              echo "var codePanelItemId; var newExampleCodeBlock; function addNewExampleCodeBlock" . $i . "(){ codePanelItemId = $('#newExampleCodeBlockCPIID" . $i . "').val(); newExampleCodeBlock = $('#newExampleCodeBlock" . $i . "').val(); if(codePanelItemId !='' && newExampleCodeBlock !=''){ $.ajax({ method: 'POST', data: { codePanelItemId: codePanelItemId, newExampleCodeBlock: newExampleCodeBlock}, url: '".base_url()."UpdateController/addNewExampleCodeBlock/', success: function(result) {location.reload();},error: function() {}});}else{console.log('codeBlock or codePanelItemId information not provided!')}}";
+            }
+
+            for ($i = 1; $i <= $addNewExampleCodeNoteCount; $i++) {
+              echo "var codePanelItemId; var newExampleCodeNote; function addNewExampleCodeNote" . $i . "(){ codePanelItemId = $('#newExampleCodeNoteCPIID" . $i . "').val(); newExampleCodeNote = $('#newExampleCodeNote" . $i . "').val(); if(codePanelItemId !='' && newExampleCodeNote !=''){ $.ajax({ method: 'POST', data: { codePanelItemId: codePanelItemId, newExampleCodeNote: newExampleCodeNote}, url: '".base_url()."UpdateController/addNewExampleCodeNote/', success: function(result) {location.reload();},error: function() {}});}else{console.log('codeNote or codePanelItemId information not provided!')}}";
+            }
+
+            for ($i = 1; $i <= $addNewExampleCodeDescriptionCount; $i++) {
+              echo "var codePanelItemId; var newExampleCodeDescription; function addNewExampleCodeDescription" . $i . "(){ codePanelItemId = $('#newExampleCodeDescriptionCPIID" . $i . "').val(); newExampleCodeDescription = $('#newExampleCodeDescription" . $i . "').val(); if(codePanelItemId !='' && newExampleCodeDescription !=''){ $.ajax({ method: 'POST', data: { codePanelItemId: codePanelItemId, newExampleCodeDescription: newExampleCodeDescription}, url: '".base_url()."UpdateController/addNewExampleCodeDescription/', success: function(result) {location.reload();},error: function() {}});}else{console.log('codeDescription or codePanelItemId information not provided!')}}";
+            }
+
+            for ($i = 1; $i <= $addNewExampleCodeWarningCount; $i++) {
+              echo "var codePanelItemId; var newExampleCodeWarning; function addNewExampleCodeWarning" . $i . "(){ codePanelItemId = $('#newExampleCodeWarningCPIID" . $i . "').val(); newExampleCodeWarning = $('#newExampleCodeWarning" . $i . "').val(); if(codePanelItemId !='' && newExampleCodeWarning !=''){ $.ajax({ method: 'POST', data: { codePanelItemId: codePanelItemId, newExampleCodeWarning: newExampleCodeWarning}, url: '".base_url()."UpdateController/addNewExampleCodeWarning/', success: function(result) {location.reload();},error: function() {}});}else{console.log('codeWarning or codePanelItemId information not provided!')}}";
+            }
+
+            for ($i = 1; $i <= $exampleCodePanelCount; $i++) {
+                echo "var codePanelId; var exampleCodePanelItem; function addExampleCodePanelItem" . $i . "(){ codePanelId = $('#exampleCodePanelId".$i."').val(); exampleCodePanelItem = $('#addExampleCodePanelItem".$i."').val(); $.ajax({ method: 'POST', data: { codePanelId: codePanelId, exampleCodePanelItem: exampleCodePanelItem}, url: '".base_url()."UpdateController/addExampleCodePanelItem/', success: function(result) {location.reload();},error: function() {}});}";
+            }
+            ?>
+    </script>
+
+    <script>
+        (function(i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function() {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-90995417-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+</body>
+
+</html>
