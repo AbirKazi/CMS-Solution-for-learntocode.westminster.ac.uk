@@ -1,5 +1,5 @@
 # CMS-Solution-for-learntocode.westminster.ac.uk
-I developed a CMS solution for learntocode.westminster.ac.uk. Thanks to this CMS solution the user now has a nice user interface from which they can manage content on their site. Before this solution the user was required to make changes to the the source code of the site, everytime they wanted to manage content on the site, which was time-consuming and error-prone. 
+I developed a bespoke CMS solution for learntocode.westminster.ac.uk. Thanks to this CMS solution the user now has a nice user interface from which they can manage content on their site. Before this solution the user was required to make changes to the source code of the site, everytime they wanted to manage content on the site, which was time-consuming and error-prone. 
 
 Technologies used in this project are: HTML, CSS, Bootstrap, JavaScript, jQuery, PHP, JSON, AJAX, REST, SQL (phpMyAdmin), Backbone, CodeIgniter
 
